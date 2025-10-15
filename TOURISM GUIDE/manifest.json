@@ -1,0 +1,17 @@
+{
+  "name": "TravelTrack - Tourism Guide with Traceability",
+  "short_name": "TravelTrack",
+  "description": "Discover amazing destinations and track your travel journey with comprehensive traceability",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3498db",
+  "icons": [
+    {
+      "src": "img/favicon.svg",
+      "sizes": "64x64 128x128 256x256 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

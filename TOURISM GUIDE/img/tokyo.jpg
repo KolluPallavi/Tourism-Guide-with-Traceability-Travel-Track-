@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
+  <!-- Sky background -->
+  <rect width="600" height="400" fill="#3498db" />
+  
+  <!-- Ground -->
+  <rect x="0" y="350" width="600" height="50" fill="#34495e" />
+  
+  <!-- Mount Fuji -->
+  <polygon points="0,350 100,150 200,350" fill="#ecf0f1" />
+  <polygon points="80,350 100,200 120,350" fill="#bdc3c7" />
+  
+  <!-- Tokyo Tower -->
+  <g>
+    <!-- Base -->
+    <polygon points="400,350 380,250 420,250 400,350" fill="#e74c3c" />
+    
+    <!-- Middle section -->
+    <polygon points="385,250 415,250 405,150 395,150" fill="#e74c3c" />
+    
+    <!-- Top section -->
+    <polygon points="395,150 405,150 400,100" fill="#e74c3c" />
+    
+    <!-- Antenna -->
+    <line x1="400" y1="100" x2="400" y2="80" stroke="#7f8c8d" stroke-width="2" />
+    
+    <!-- Observation decks -->
+    <rect x="390" y="200" width="20" height="5" fill="#7f8c8d" />
+    <rect x="392" y="150" width="16" height="5" fill="#7f8c8d" />
+  </g>
+  
+  <!-- Skyscrapers -->
+  <g>
+    <!-- Building 1 -->
+    <rect x="250" y="200" width="40" height="150" fill="#2c3e50" />
+    
+    <!-- Windows -->
+    <g fill="#f1c40f">
+      <rect x="255" y="210" width="5" height="10" />
+      <rect x="265" y="210" width="5" height="10" />
+      <rect x="275" y="210" width="5" height="10" />
+      <rect x="255" y="230" width="5" height="10" />
+      <rect x="265" y="230" width="5" height="10" />
+      <rect x="275" y="230" width="5" height="10" />
+      <rect x="255" y="250" width="5" height="10" />
+      <rect x="265" y="250" width="5" height="10" />
+      <rect x="275" y="250" width="5" height="10" />
+    </g>
+    
+    <!-- Building 2 -->
+    <rect x="300" y="220" width="50" height="130" fill="#16a085" />
+    
+    <!-- Windows -->
+    <g fill="#f1c40f">
+      <rect x="305" y="230" width="5" height="10" />
+      <rect x="315" y="230" width="5" height="10" />
+      <rect x="325" y="230" width="5" height="10" />
+      <rect x="335" y="230" width="5" height="10" />
+      <rect x="305" y="250" width="5" height="10" />
+      <rect x="315" y="250" width="5" height="10" />
+      <rect x="325" y="250" width="5" height="10" />
+      <rect x="335" y="250" width="5" height="10" />
+      <rect x="305" y="270" width="5" height="10" />
+      <rect x="315" y="270" width="5" height="10" />
+      <rect x="325" y="270" width="5" height="10" />
+      <rect x="335" y="270" width="5" height="10" />
+    </g>
+    
+    <!-- Building 3 -->
+    <rect x="450" y="180" width="60" height="170" fill="#8e44ad" />
+    
+    <!-- Windows -->
+    <g fill="#f1c40f">
+      <rect x="455" y="190" width="5" height="10" />
+      <rect x="465" y="190" width="5" height="10" />
+      <rect x="475" y="190" width="5" height="10" />
+      <rect x="485" y="190" width="5" height="10" />
+      <rect x="495" y="190" width="5" height="10" />
+      <rect x="455" y="210" width="5" height="10" />
+      <rect x="465" y="210" width="5" height="10" />
+      <rect x="475" y="210" width="5" height="10" />
+      <rect x="485" y="210" width="5" height="10" />
+      <rect x="495" y="210" width="5" height="10" />
+      <rect x="455" y="230" width="5" height="10" />
+      <rect x="465" y="230" width="5" height="10" />
+      <rect x="475" y="230" width="5" height="10" />
+      <rect x="485" y="230" width="5" height="10" />
+      <rect x="495" y="230" width="5" height="10" />
+    </g>
+  </g>
+  
+  <!-- Traditional temple -->
+  <g>
+    <!-- Base -->
+    <rect x="150" y="300" width="80" height="50" fill="#c0392b" />
+    
+    <!-- Roof -->
+    <polygon points="140,300 240,300 190,270" fill="#7f8c8d" />
+    
+    <!-- Door -->
+    <rect x="180" y="320" width="20" height="30" fill="#34495e" />
+    
+    <!-- Columns -->
+    <rect x="160" y="300" width="5" height="50" fill="#7f8c8d" />
+    <rect x="215" y="300" width="5" height="50" fill="#7f8c8d" />
+  </g>
+  
+  <!-- Cherry blossom tree -->
+  <g>
+    <!-- Trunk -->
+    <rect x="520" y="300" width="10" height="50" fill="#795548" />
+    
+    <!-- Blossoms -->
+    <circle cx="525" cy="280" r="25" fill="#f8c9d4" />
+    <circle cx="545" cy="290" r="20" fill="#f8c9d4" />
+    <circle cx="505" cy="290" r="20" fill="#f8c9d4" />
+    <circle cx="535" cy="270" r="15" fill="#f8c9d4" />
+    <circle cx="515" cy="270" r="15" fill="#f8c9d4" />
+  </g>
+  
+  <!-- Sun -->
+  <circle cx="100" cy="80" r="40" fill="#f39c12" />
+  
+  <!-- Clouds -->
+  <g fill="#ecf0f1">
+    <ellipse cx="200" cy="100" rx="50" ry="30" />
+    <ellipse cx="230" cy="90" rx="40" ry="25" />
+    <ellipse cx="170" cy="90" rx="30" ry="20" />
+  </g>
+</svg>

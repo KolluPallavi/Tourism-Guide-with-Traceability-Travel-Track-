@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelTrack Traceability Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #217dbb;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-height: 200px;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>TravelTrack Traceability Demo</h1>
+    
+    <p>This page demonstrates the traceability features of the TravelTrack tourism guide application. You can interact with the demo to see how the traceability system works.</p>
+    
+    <h2>Traceability System</h2>
+    
+    <div class="code-block">
+        <p>The TravelTrack application uses a comprehensive traceability system that:</p>
+        <ul>
+            <li>Records every user interaction with destinations</li>
+            <li>Tracks when places are visited or added to wishlist</li>
+            <li>Creates a timeline of all travel activities</li>
+            <li>Generates statistics about travel patterns</li>
+            <li>Allows exporting of traceability data</li>
+        </ul>
+    </div>
+    
+    <h2>Interactive Demo</h2>
+    
+    <p>Click the buttons below to simulate user actions and see how they are recorded in the traceability system:</p>
+    
+    <button class="btn" id="view-destination">View Destination</button>
+    <button class="btn" id="add-visited">Mark as Visited</button>
+    <button class="btn" id="add-wishlist">Add to Wishlist</button>
+    <button class="btn" id="generate-timeline">Generate Timeline</button>
+    <button class="btn" id="generate-stats">Generate Statistics</button>
+    <button class="btn" id="clear-traces">Clear All Traces</button>
+    
+    <h2>Traceability Output</h2>
+    <div id="output">Traceability data will appear here...</div>
+    
+    <h2>How It Works</h2>
+    
+    <div class="code-block">
+        <p>The traceability system is implemented using the <code>TravelTrace</code> class in <code>data.js</code>. Key methods include:</p>
+        <ul>
+            <li><code>startTrace(type)</code> - Begins a new trace with the specified type</li>
+            <li><code>addEvent(event, details)</code> - Adds an event to the current trace</li>
+            <li><code>endTrace()</code> - Completes the current trace and saves it</li>
+            <li><code>generateTimeline()</code> - Creates a chronological timeline of all traces</li>
+            <li><code>generateStatistics()</code> - Analyzes traces to produce statistics</li>
+        </ul>
+    </div>
+    
+    <a href="index.html" class="back-link">← Back to TravelTrack Application</a>
+    
+    <script>
+        // Simple demo implementation of the TravelTrace class
+        class TravelTraceDemo {
+            constructor() {
+                this.traces = [];
+                this.currentTrace = null;
+                this.output = document.getElementById('output');
+            }
+            
+            startTrace(type) {
+                this.currentTrace = {
+                    id: Date.now(),
+                    type: type,
+                    startTime: new Date(),
+                    events: [],
+                    endTime: null
+                };
+                this.updateOutput(`Trace started: ${type}`);
+            }
+            
+            addEvent(event, details = null) {
+                if (!this.currentTrace) {
+                    this.updateOutput('Error: No active trace. Call startTrace first.');
+                    return;
+                }
+                
+                this.currentTrace.events.push({
+                    timestamp: new Date(),
+                    event: event,
+                    details: details
+                });
+                
+                this.updateOutput(`Event added: ${event}${details ? ' - ' + details : ''}`);
+            }
+            
+            endTrace() {
+                if (!this.currentTrace) {
+                    this.updateOutput('Error: No active trace to end.');
+                    return;
+                }
+                
+                this.currentTrace.endTime = new Date();
+                this.traces.push(this.currentTrace);
+                
+                this.updateOutput(`Trace ended: ${this.currentTrace.type}`);
+                this.currentTrace = null;
+            }
+            
+            generateTimeline() {
+                if (this.traces.length === 0) {
+                    this.updateOutput('No traces available to generate timeline.');
+                    return [];
+                }
+                
+                let timeline = [];
+                
+                this.traces.forEach(trace => {
+                    // Add trace start
+                    timeline.push({
+                        timestamp: trace.startTime,
+                        event: `Started ${trace.type}`,
+                        type: trace.type
+                    });
+                    
+                    // Add all events
+                    trace.events.forEach(event => {
+                        timeline.push({
+                            timestamp: event.timestamp,
+                            event: event.event,
+                            type: trace.type,
+                            details: event.details
+                        });
+                    });
+                    
+                    // Add trace end
+                    if (trace.endTime) {
+                        timeline.push({
+                            timestamp: trace.endTime,
+                            event: `Ended ${trace.type}`,
+                            type: trace.type
+                        });
+                    }
+                });
+                
+                // Sort by timestamp
+                timeline.sort((a, b) => a.timestamp - b.timestamp);
+                
+                this.displayTimeline(timeline);
+                return timeline;
+            }
+            
+            generateStatistics() {
+                if (this.traces.length === 0) {
+                    this.updateOutput('No traces available to generate statistics.');
+                    return {};
+                }
+                
+                // Count traces by type
+                const traceTypes = {};
+                this.traces.forEach(trace => {
+                    traceTypes[trace.type] = (traceTypes[trace.type] || 0) + 1;
+                });
+                
+                // Count total events
+                let totalEvents = 0;
+                this.traces.forEach(trace => {
+                    totalEvents += trace.events.length;
+                });
+                
+                // Calculate average events per trace
+                const avgEventsPerTrace = totalEvents / this.traces.length;
+                
+                const stats = {
+                    totalTraces: this.traces.length,
+                    tracesByType: traceTypes,
+                    totalEvents: totalEvents,
+                    avgEventsPerTrace: avgEventsPerTrace.toFixed(2),
+                    firstTraceDate: this.traces.length > 0 ? this.traces[0].startTime : null,
+                    lastTraceDate: this.traces.length > 0 ? this.traces[this.traces.length - 1].startTime : null
+                };
+                
+                this.displayStatistics(stats);
+                return stats;
+            }
+            
+            clearTraces() {
+                this.traces = [];
+                this.currentTrace = null;
+                this.updateOutput('All traces have been cleared.');
+            }
+            
+            updateOutput(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                this.output.innerHTML += `<p><strong>${timestamp}</strong>: ${message}</p>`;
+                this.output.scrollTop = this.output.scrollHeight;
+            }
+            
+            displayTimeline(timeline) {
+                let html = '<h3>Timeline</h3>';
+                
+                if (timeline.length === 0) {
+                    html += '<p>No timeline data available.</p>';
+                } else {
+                    html += '<ul>';
+                    timeline.forEach(item => {
+                        const time = item.timestamp.toLocaleTimeString();
+                        html += `<li><strong>${time}</strong>: ${item.event} (${item.type})${item.details ? ' - ' + item.details : ''}</li>`;
+                    });
+                    html += '</ul>';
+                }
+                
+                this.output.innerHTML = html;
+            }
+            
+            displayStatistics(stats) {
+                let html = '<h3>Statistics</h3>';
+                
+                html += `<p>Total Traces: ${stats.totalTraces}</p>`;
+                html += `<p>Total Events: ${stats.totalEvents}</p>`;
+                html += `<p>Average Events Per Trace: ${stats.avgEventsPerTrace}</p>`;
+                
+                html += '<p>Traces by Type:</p><ul>';
+                for (const type in stats.tracesByType) {
+                    html += `<li>${type}: ${stats.tracesByType[type]}</li>`;
+                }
+                html += '</ul>';
+                
+                if (stats.firstTraceDate) {
+                    html += `<p>First Trace: ${stats.firstTraceDate.toLocaleString()}</p>`;
+                }
+                
+                if (stats.lastTraceDate) {
+                    html += `<p>Last Trace: ${stats.lastTraceDate.toLocaleString()}</p>`;
+                }
+                
+                this.output.innerHTML = html;
+            }
+        }
+        
+        // Initialize the demo
+        const traceDemo = new TravelTraceDemo();
+        
+        // Set up event listeners
+        document.getElementById('view-destination').addEventListener('click', () => {
+            traceDemo.startTrace('view');
+            traceDemo.addEvent('Viewed destination', 'Paris, France');
+            traceDemo.endTrace();
+        });
+        
+        document.getElementById('add-visited').addEventListener('click', () => {
+            traceDemo.startTrace('visit');
+            traceDemo.addEvent('Marked as visited', 'Tokyo, Japan');
+            traceDemo.addEvent('Added visit date', '2023-06-15');
+            traceDemo.addEvent('Added rating', '5 stars');
+            traceDemo.endTrace();
+        });
+        
+        document.getElementById('add-wishlist').addEventListener('click', () => {
+            traceDemo.startTrace('wishlist');
+            traceDemo.addEvent('Added to wishlist', 'Bali, Indonesia');
+            traceDemo.addEvent('Set priority', 'High');
+            traceDemo.endTrace();
+        });
+        
+        document.getElementById('generate-timeline').addEventListener('click', () => {
+            traceDemo.generateTimeline();
+        });
+        
+        document.getElementById('generate-stats').addEventListener('click', () => {
+            traceDemo.generateStatistics();
+        });
+        
+        document.getElementById('clear-traces').addEventListener('click', () => {
+            traceDemo.clearTraces();
+        });
+    </script>
+</body>
+</html>

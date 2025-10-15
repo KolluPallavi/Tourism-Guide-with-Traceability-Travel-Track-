@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover amazing destinations and track your travel journey with comprehensive traceability">
+    <meta name="theme-color" content="#3498db">
+    <title>Tourism Guide with Traceability</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>TravelTrack</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-page="home">Home</a></li>
+                <li><a href="#" data-page="destinations">Destinations</a></li>
+                <li><a href="#" data-page="my-journey">My Journey</a></li>
+                <li><a href="#" data-page="about">About</a></li>
+            </ul>
+            <div class="user-profile">
+                <img src="img/default-avatar.png" alt="User Profile" id="user-avatar">
+                <span id="username">Guest</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <h2>Track Your Adventures</h2>
+                <p>Discover amazing destinations and keep a record of your journey</p>
+                <button class="cta-button" id="start-journey">Start Your Journey</button>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Explore Destinations</h3>
+                    <p>Discover popular and hidden gems around the world</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-route"></i>
+                    <h3>Track Your Path</h3>
+                    <p>Keep a record of places you've visited and plan future trips</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-camera"></i>
+                    <h3>Create Memories</h3>
+                    <p>Save photos and notes from your adventures</p>
+                </div>
+            </div>
+
+            <div class="popular-destinations">
+                <h2>Popular Destinations</h2>
+                <div class="destination-cards">
+                    <!-- Destinations will be loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Destinations Page -->
+        <section id="destinations" class="page">
+            <div class="search-container">
+                <input type="text" id="destination-search" placeholder="Search destinations...">
+                <button id="search-btn"><i class="fas fa-search"></i></button>
+                <div class="filters">
+                    <select id="region-filter">
+                        <option value="">All Regions</option>
+                        <option value="asia">Asia</option>
+                        <option value="europe">Europe</option>
+                        <option value="north-america">North America</option>
+                        <option value="south-america">South America</option>
+                        <option value="africa">Africa</option>
+                        <option value="oceania">Oceania</option>
+                    </select>
+                    <select id="activity-filter">
+                        <option value="">All Activities</option>
+                        <option value="beach">Beach</option>
+                        <option value="mountain">Mountain</option>
+                        <option value="city">City</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="adventure">Adventure</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="destinations-grid" id="destinations-container">
+                <!-- Destinations will be loaded dynamically -->
+            </div>
+
+            <div class="pagination">
+                <button id="prev-page"><i class="fas fa-chevron-left"></i></button>
+                <span id="page-indicator">Page 1 of 5</span>
+                <button id="next-page"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </section>
+
+        <!-- My Journey Page -->
+        <section id="my-journey" class="page">
+            <div class="journey-header">
+                <h2>My Travel Journey</h2>
+                <div class="journey-stats">
+                    <div class="stat">
+                        <i class="fas fa-map-pin"></i>
+                        <span id="places-visited">0</span>
+                        <p>Places Visited</p>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-globe-americas"></i>
+                        <span id="countries-visited">0</span>
+                        <p>Countries</p>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-heart"></i>
+                        <span id="favorites-count">0</span>
+                        <p>Favorites</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="journey-tabs">
+                <button class="tab-btn active" data-tab="visited">Visited</button>
+                <button class="tab-btn" data-tab="wishlist">Wishlist</button>
+                <button class="tab-btn" data-tab="timeline">Timeline</button>
+            </div>
+            
+            <div class="export-options">
+                <button id="export-journey" class="export-btn"><i class="fas fa-file-export"></i> Export Journey</button>
+                <button id="export-timeline" class="export-btn"><i class="fas fa-history"></i> Export Timeline</button>
+                <button id="export-stats" class="export-btn"><i class="fas fa-chart-bar"></i> Export Statistics</button>
+            </div>
+
+            <div class="journey-content">
+                <div id="visited" class="tab-content active">
+                    <div class="visited-places">
+                        <!-- Visited places will be loaded dynamically -->
+                        <div class="empty-state">
+                            <i class="fas fa-map"></i>
+                            <p>You haven't marked any places as visited yet.</p>
+                            <button id="explore-destinations">Explore Destinations</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="wishlist" class="tab-content">
+                    <div class="wishlist-places">
+                        <!-- Wishlist places will be loaded dynamically -->
+                        <div class="empty-state">
+                            <i class="fas fa-heart"></i>
+                            <p>Your wishlist is empty.</p>
+                            <button id="discover-places">Discover Places</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="timeline" class="tab-content">
+                    <div class="timeline-container">
+                        <!-- Timeline will be loaded dynamically -->
+                        <div class="empty-state">
+                            <i class="fas fa-route"></i>
+                            <p>Your journey timeline is empty.</p>
+                            <button id="start-tracking">Start Tracking</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="about" class="page">
+            <div class="about-content">
+                <h2>About TravelTrack</h2>
+                <p>TravelTrack is a unique tourism guide application that helps travelers discover amazing destinations while keeping track of their journey. Our mission is to make travel planning easier and more enjoyable by providing a comprehensive platform for exploration and documentation.</p>
+                
+                <h3>Our Features</h3>
+                <ul>
+                    <li><strong>Destination Discovery:</strong> Explore thousands of destinations worldwide with detailed information.</li>
+                    <li><strong>Journey Tracking:</strong> Keep a record of places you've visited and create a visual timeline of your adventures.</li>
+                    <li><strong>Wishlist Management:</strong> Save places you want to visit in the future.</li>
+                    <li><strong>Travel Statistics:</strong> View insights about your travel history and preferences.</li>
+                    <li><strong>Data Visualization:</strong> Interactive charts and graphs to visualize your travel patterns.</li>
+                    <li><strong>User Profiles:</strong> Create a personalized profile to store your travel memories.</li>
+                </ul>
+                
+                <h3>How Traceability Works</h3>
+                <p>Our unique traceability system allows you to:</p>
+                <ol>
+                    <li>Mark destinations as visited or add them to your wishlist</li>
+                    <li>Record the dates of your visits</li>
+                    <li>Add personal notes and photos to each destination</li>
+                    <li>Generate a chronological timeline of your travels</li>
+                    <li>Track statistics about your travel patterns and preferences</li>
+                    <li>Visualize your travel data with interactive charts and graphs</li>
+                </ol>
+                
+                <h3>Interactive Demos</h3>
+                <p>Want to see our traceability system in action? Check out these interactive demos:</p>
+                <div class="demo-links">
+                    <a href="traceability-demo.html" class="demo-link">Traceability System Demo</a>
+                    <a href="export-demo.html" class="demo-link">Export Functionality Demo</a>
+                    <a href="visualization.html" class="demo-link">Data Visualization Demo</a>
+                </div>
+                
+                <h3>Contact Us</h3>
+                <p>Have questions or suggestions? We'd love to hear from you!</p>
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" placeholder="Your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" placeholder="Your message"></textarea>
+                    </div>
+                    <button type="submit" id="send-message">Send Message</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Destination Detail Modal -->
+        <div id="destination-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div id="destination-details">
+                    <!-- Destination details will be loaded dynamically -->
+                </div>
+                <div class="destination-actions">
+                    <button id="add-to-visited" class="action-btn"><i class="fas fa-check"></i> Mark as Visited</button>
+                    <button id="add-to-wishlist" class="action-btn"><i class="fas fa-heart"></i> Add to Wishlist</button>
+                    <button id="share-destination" class="action-btn"><i class="fas fa-share-alt"></i> Share</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>TravelTrack</h2>
+                <p>Track Your Adventures</p>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Destinations</a></li>
+                    <li><a href="#">My Journey</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 TravelTrack. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/export.js"></script>
+    <script>
+        // Register Service Worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelTrack Export Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        pre {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background-color: #217dbb;
+        }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            min-height: 200px;
+        }
+        .code-block {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .export-message {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+        .export-message.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <h1>TravelTrack Export Demo</h1>
+    
+    <p>This page demonstrates the export functionality of the TravelTrack tourism guide application. You can interact with the demo to see how the export system works.</p>
+    
+    <h2>Export System</h2>
+    
+    <div class="code-block">
+        <p>The TravelTrack application allows users to export their travel data in various formats:</p>
+        <ul>
+            <li>Journey data (visited places and wishlist)</li>
+            <li>Timeline data (chronological history of travel activities)</li>
+            <li>Statistics data (insights about travel patterns)</li>
+        </ul>
+    </div>
+    
+    <h2>Interactive Demo</h2>
+    
+    <p>Click the buttons below to simulate exporting different types of travel data:</p>
+    
+    <button class="btn" id="export-journey">Export Journey</button>
+    <button class="btn" id="export-timeline">Export Timeline</button>
+    <button class="btn" id="export-stats">Export Statistics</button>
+    
+    <h2>Export Preview</h2>
+    <div id="output">Export preview will appear here...</div>
+    
+    <h2>How It Works</h2>
+    
+    <div class="code-block">
+        <p>The export system is implemented using the <code>TravelExport</code> class in <code>export.js</code>. Key methods include:</p>
+        <ul>
+            <li><code>exportJourney()</code> - Exports visited places and wishlist data</li>
+            <li><code>exportTimeline()</code> - Exports the chronological timeline of travel activities</li>
+            <li><code>exportStatistics()</code> - Exports insights about travel patterns</li>
+            <li><code>downloadJSON(data, filename)</code> - Downloads data as a JSON file</li>
+            <li><code>downloadCSV(csv, filename)</code> - Downloads data as a CSV file</li>
+        </ul>
+    </div>
+    
+    <a href="index.html" class="back-link">← Back to TravelTrack Application</a>
+    
+    <script>
+        // Sample data for the demo
+        const sampleData = {
+            visitedPlaces: [
+                {
+                    id: 1,
+                    name: "Paris",
+                    country: "France",
+                    region: "Europe",
+                    visitDate: "2023-03-15",
+                    rating: 5,
+                    notes: "Beautiful city, loved the Eiffel Tower!"
+                },
+                {
+                    id: 3,
+                    name: "Tokyo",
+                    country: "Japan",
+                    region: "Asia",
+                    visitDate: "2023-05-20",
+                    rating: 5,
+                    notes: "Amazing food and culture!"
+                }
+            ],
+            wishlist: [
+                {
+                    id: 2,
+                    name: "Bali",
+                    country: "Indonesia",
+                    region: "Asia",
+                    priority: "High",
+                    notes: "Want to visit the beaches and temples"
+                },
+                {
+                    id: 4,
+                    name: "New York",
+                    country: "USA",
+                    region: "North America",
+                    priority: "Medium",
+                    notes: "Want to see the Statue of Liberty"
+                }
+            ],
+            timeline: [
+                {
+                    timestamp: "2023-03-15T10:30:00Z",
+                    event: "Visited Paris",
+                    type: "visit",
+                    details: "First time in France"
+                },
+                {
+                    timestamp: "2023-04-10T14:45:00Z",
+                    event: "Added Bali to wishlist",
+                    type: "wishlist",
+                    details: "Planning for next summer"
+                },
+                {
+                    timestamp: "2023-05-20T09:15:00Z",
+                    event: "Visited Tokyo",
+                    type: "visit",
+                    details: "Cherry blossom season"
+                },
+                {
+                    timestamp: "2023-06-05T16:20:00Z",
+                    event: "Added New York to wishlist",
+                    type: "wishlist",
+                    details: "Planning for winter trip"
+                }
+            ],
+            statistics: {
+                totalPlacesVisited: 2,
+                totalCountriesVisited: 2,
+                totalRegionsVisited: 2,
+                averageRating: 5,
+                wishlistCount: 2,
+                mostVisitedRegion: "Mixed (Asia and Europe)",
+                travelFrequency: "Every 2-3 months"
+            }
+        };
+        
+        // Simple demo implementation of the TravelExport class
+        class TravelExportDemo {
+            constructor() {
+                this.output = document.getElementById('output');
+                this.data = sampleData;
+            }
+            
+            exportJourney() {
+                // Create export data
+                const exportData = {
+                    visitedPlaces: this.data.visitedPlaces,
+                    wishlist: this.data.wishlist,
+                    exportDate: new Date().toISOString(),
+                    exportType: 'journey'
+                };
+                
+                // Display preview
+                this.displayJSON(exportData);
+                
+                // Show success message
+                this.showExportMessage("Successfully exported journey data");
+            }
+            
+            exportTimeline() {
+                // Create export data
+                const exportData = {
+                    timeline: this.data.timeline,
+                    exportDate: new Date().toISOString(),
+                    exportType: 'timeline'
+                };
+                
+                // Display preview
+                this.displayJSON(exportData);
+                
+                // Show success message
+                this.showExportMessage("Successfully exported timeline data");
+            }
+            
+            exportStatistics() {
+                // Create export data
+                const exportData = {
+                    statistics: this.data.statistics,
+                    exportDate: new Date().toISOString(),
+                    exportType: 'statistics'
+                };
+                
+                // Display preview
+                this.displayJSON(exportData);
+                
+                // Show success message
+                this.showExportMessage("Successfully exported statistics data");
+            }
+            
+            displayJSON(data) {
+                const jsonString = JSON.stringify(data, null, 2);
+                this.output.innerHTML = `<pre>${jsonString}</pre>`;
+            }
+            
+            showExportMessage(message) {
+                // Remove any existing message
+                const existingMessage = document.querySelector('.export-message');
+                if (existingMessage) {
+                    document.body.removeChild(existingMessage);
+                }
+                
+                // Create message element
+                const messageEl = document.createElement('div');
+                messageEl.className = 'export-message';
+                messageEl.textContent = message;
+                
+                // Add to body
+                document.body.appendChild(messageEl);
+                
+                // Remove after delay
+                setTimeout(() => {
+                    messageEl.classList.add('fade-out');
+                    setTimeout(() => {
+                        document.body.removeChild(messageEl);
+                    }, 500);
+                }, 3000);
+            }
+        }
+        
+        // Initialize the demo
+        const exportDemo = new TravelExportDemo();
+        
+        // Set up event listeners
+        document.getElementById('export-journey').addEventListener('click', () => {
+            exportDemo.exportJourney();
+        });
+        
+        document.getElementById('export-timeline').addEventListener('click', () => {
+            exportDemo.exportTimeline();
+        });
+        
+        document.getElementById('export-stats').addEventListener('click', () => {
+            exportDemo.exportStatistics();
+        });
+    </script>
+</body>
+</html>

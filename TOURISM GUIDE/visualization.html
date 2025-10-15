@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelTrack Visualization</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        .visualization-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        canvas {
+            width: 100%;
+            max-height: 400px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #217dbb;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>TravelTrack Visualization</h1>
+    
+    <p>This page demonstrates the visualization capabilities of the TravelTrack tourism guide application. The charts below provide visual insights into your travel patterns and preferences.</p>
+    
+    <div class="controls">
+        <button class="btn" id="generate-data">Generate Random Data</button>
+        <button class="btn" id="reset-data">Reset to Default Data</button>
+        <button class="btn" id="record-interaction">Record Interaction</button>
+    </div>
+    
+    <div class="visualization-container">
+        <div class="chart-container">
+            <div class="chart-title">Destinations by Region</div>
+            <canvas id="regions-chart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">Travel Activity Timeline</div>
+            <canvas id="timeline-chart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">Destination Ratings</div>
+            <canvas id="ratings-chart"></canvas>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">Visited vs. Wishlist by Region</div>
+            <canvas id="comparison-chart"></canvas>
+        </div>
+    </div>
+    
+    <a href="index.html" class="back-link">← Back to TravelTrack Application</a>
+    
+    <script>
+        // Default sample data
+        const defaultData = {
+            regions: {
+                'Europe': 3,
+                'Asia': 2,
+                'North America': 1,
+                'South America': 0,
+                'Africa': 1,
+                'Oceania': 0
+            },
+            timeline: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                visited: [0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0],
+                wishlist: [0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0]
+            },
+            ratings: {
+                '5 Stars': 3,
+                '4 Stars': 2,
+                '3 Stars': 1,
+                '2 Stars': 0,
+                '1 Star': 0
+            },
+            comparison: {
+                regions: ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'],
+                visited: [3, 2, 1, 0, 1, 0],
+                wishlist: [1, 2, 2, 1, 0, 1]
+            }
+        };
+        
+        // Try to load real data from localStorage
+        function loadUserDataFromStorage() {
+            const savedUserData = localStorage.getItem('travelTrackUserData');
+            const savedTraces = localStorage.getItem('travelTrackTraces');
+            
+            if (savedUserData && savedTraces) {
+                try {
+                    const userData = JSON.parse(savedUserData);
+                    const traces = JSON.parse(savedTraces);
+                    
+                    // Process data for visualization
+                    const processedData = processUserDataForVisualization(userData, traces);
+                    if (processedData) {
+                        return processedData;
+                    }
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
+            }
+            
+            return null;
+        }
+        
+        // Process user data for visualization
+        function processUserDataForVisualization(userData, traces) {
+            if (!userData || !userData.journeyData) return null;
+            
+            // Process regions data
+            const regions = {};
+            const regionsList = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'];
+            regionsList.forEach(region => regions[region] = 0);
+            
+            // Process visited and wishlist data
+            const visitedByRegion = Array(regionsList.length).fill(0);
+            const wishlistByRegion = Array(regionsList.length).fill(0);
+            
+            // Process ratings data
+            const ratings = {
+                '5 Stars': 0,
+                '4 Stars': 0,
+                '3 Stars': 0,
+                '2 Stars': 0,
+                '1 Star': 0
+            };
+            
+            // Process timeline data
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const visitedByMonth = Array(12).fill(0);
+            const wishlistByMonth = Array(12).fill(0);
+            
+            // Process visited places
+            if (userData.journeyData.visited) {
+                userData.journeyData.visited.forEach(place => {
+                    // Update regions count
+                    if (place.region && regions.hasOwnProperty(place.region)) {
+                        regions[place.region]++;
+                    }
+                    
+                    // Update visited by region
+                    const regionIndex = regionsList.indexOf(place.region);
+                    if (regionIndex !== -1) {
+                        visitedByRegion[regionIndex]++;
+                    }
+                    
+                    // Update ratings
+                    if (place.rating) {
+                        const ratingKey = `${place.rating} Star${place.rating !== 1 ? 's' : ''}`;
+                        if (ratings.hasOwnProperty(ratingKey)) {
+                            ratings[ratingKey]++;
+                        }
+                    }
+                    
+                    // Update timeline
+                    if (place.visitDate) {
+                        const date = new Date(place.visitDate);
+                        const month = date.getMonth();
+                        visitedByMonth[month]++;
+                    }
+                });
+            }
+            
+            // Process wishlist places
+            if (userData.journeyData.wishlist) {
+                userData.journeyData.wishlist.forEach(place => {
+                    // Update wishlist by region
+                    const regionIndex = regionsList.indexOf(place.region);
+                    if (regionIndex !== -1) {
+                        wishlistByRegion[regionIndex]++;
+                    }
+                    
+                    // Update timeline
+                    if (place.addedDate) {
+                        const date = new Date(place.addedDate);
+                        const month = date.getMonth();
+                        wishlistByMonth[month]++;
+                    }
+                });
+            }
+            
+            return {
+                regions: regions,
+                timeline: {
+                    labels: months,
+                    visited: visitedByMonth,
+                    wishlist: wishlistByMonth
+                },
+                ratings: ratings,
+                comparison: {
+                    regions: regionsList,
+                    visited: visitedByRegion,
+                    wishlist: wishlistByRegion
+                }
+            };
+        }
+        
+        // Try to load user data from storage, otherwise use default data
+        const userData = loadUserDataFromStorage();
+        let currentData = userData ? userData : JSON.parse(JSON.stringify(defaultData));
+        
+        // Chart instances
+        let regionsChart, timelineChart, ratingsChart, comparisonChart;
+        
+        // Add status message to indicate data source
+        const dataSourceMessage = document.createElement('p');
+        dataSourceMessage.style.textAlign = 'center';
+        dataSourceMessage.style.marginTop = '10px';
+        dataSourceMessage.style.color = '#666';
+        dataSourceMessage.textContent = userData ? 'Using your actual travel data' : 'Using sample data (no travel data found)';
+        document.querySelector('.controls').appendChild(dataSourceMessage);
+        
+        // Initialize charts
+        function initCharts() {
+            // Regions Chart
+            const regionsCtx = document.getElementById('regions-chart').getContext('2d');
+            regionsChart = new Chart(regionsCtx, {
+                type: 'pie',
+                data: {
+                    labels: Object.keys(currentData.regions),
+                    datasets: [{
+                        data: Object.values(currentData.regions),
+                        backgroundColor: [
+                            '#3498db',
+                            '#2ecc71',
+                            '#f39c12',
+                            '#e74c3c',
+                            '#9b59b6',
+                            '#1abc9c'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // Timeline Chart
+            const timelineCtx = document.getElementById('timeline-chart').getContext('2d');
+            timelineChart = new Chart(timelineCtx, {
+                type: 'line',
+                data: {
+                    labels: currentData.timeline.labels,
+                    datasets: [
+                        {
+                            label: 'Places Visited',
+                            data: currentData.timeline.visited,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: 'Added to Wishlist',
+                            data: currentData.timeline.wishlist,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                            tension: 0.4,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Ratings Chart
+            const ratingsCtx = document.getElementById('ratings-chart').getContext('2d');
+            ratingsChart = new Chart(ratingsCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(currentData.ratings),
+                    datasets: [{
+                        label: 'Number of Destinations',
+                        data: Object.values(currentData.ratings),
+                        backgroundColor: '#f39c12'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Comparison Chart
+            const comparisonCtx = document.getElementById('comparison-chart').getContext('2d');
+            comparisonChart = new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: currentData.comparison.regions,
+                    datasets: [
+                        {
+                            label: 'Visited',
+                            data: currentData.comparison.visited,
+                            backgroundColor: '#3498db'
+                        },
+                        {
+                            label: 'Wishlist',
+                            data: currentData.comparison.wishlist,
+                            backgroundColor: '#e74c3c'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Generate random data
+        function generateRandomData() {
+            // Random regions data
+            const regions = ['Europe', 'Asia', 'North America', 'South America', 'Africa', 'Oceania'];
+            const randomRegions = {};
+            regions.forEach(region => {
+                randomRegions[region] = Math.floor(Math.random() * 5);
+            });
+            
+            // Random timeline data
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const randomVisited = months.map(() => Math.floor(Math.random() * 3));
+            const randomWishlist = months.map(() => Math.floor(Math.random() * 3));
+            
+            // Random ratings data
+            const ratings = ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'];
+            const randomRatings = {};
+            ratings.forEach(rating => {
+                randomRatings[rating] = Math.floor(Math.random() * 5);
+            });
+            
+            // Random comparison data
+            const randomVisitedByRegion = regions.map(() => Math.floor(Math.random() * 5));
+            const randomWishlistByRegion = regions.map(() => Math.floor(Math.random() * 5));
+            
+            return {
+                regions: randomRegions,
+                timeline: {
+                    labels: months,
+                    visited: randomVisited,
+                    wishlist: randomWishlist
+                },
+                ratings: randomRatings,
+                comparison: {
+                    regions: regions,
+                    visited: randomVisitedByRegion,
+                    wishlist: randomWishlistByRegion
+                }
+            };
+        }
+        
+        // Update charts with new data
+        function updateCharts() {
+            // Update Regions Chart
+            regionsChart.data.labels = Object.keys(currentData.regions);
+            regionsChart.data.datasets[0].data = Object.values(currentData.regions);
+            regionsChart.update();
+            
+            // Update Timeline Chart
+            timelineChart.data.labels = currentData.timeline.labels;
+            timelineChart.data.datasets[0].data = currentData.timeline.visited;
+            timelineChart.data.datasets[1].data = currentData.timeline.wishlist;
+            timelineChart.update();
+            
+            // Update Ratings Chart
+            ratingsChart.data.labels = Object.keys(currentData.ratings);
+            ratingsChart.data.datasets[0].data = Object.values(currentData.ratings);
+            ratingsChart.update();
+            
+            // Update Comparison Chart
+            comparisonChart.data.labels = currentData.comparison.regions;
+            comparisonChart.data.datasets[0].data = currentData.comparison.visited;
+            comparisonChart.data.datasets[1].data = currentData.comparison.wishlist;
+            comparisonChart.update();
+        }
+        
+        // Event listeners
+        document.getElementById('generate-data').addEventListener('click', () => {
+            currentData = generateRandomData();
+            updateCharts();
+            recordTraceEvent('generate_random_data', 'Generated random visualization data');
+        });
+        
+        document.getElementById('reset-data').addEventListener('click', () => {
+            currentData = JSON.parse(JSON.stringify(defaultData));
+            updateCharts();
+            recordTraceEvent('reset_data', 'Reset to default visualization data');
+        });
+        
+        document.getElementById('record-interaction').addEventListener('click', () => {
+            recordTraceEvent('visualization_interaction', 'Interacted with data visualization');
+            alert('Interaction recorded in traceability system');
+        });
+        
+        // Function to record trace events in the traceability system
+        function recordTraceEvent(action, description) {
+            try {
+                // Create a trace event object
+                const traceEvent = {
+                    timestamp: new Date().toISOString(),
+                    action: action,
+                    description: description
+                };
+                
+                // Get existing traces from localStorage
+                let traces = localStorage.getItem('travelTrackTraces');
+                if (traces) {
+                    traces = JSON.parse(traces);
+                    
+                    // Add visualization trace if it doesn't exist
+                    if (!traces.find(t => t.id === 'visualization')) {
+                        traces.push({
+                            id: 'visualization',
+                            startTime: new Date().toISOString(),
+                            events: []
+                        });
+                    }
+                    
+                    // Find visualization trace and add event
+                    const visualizationTrace = traces.find(t => t.id === 'visualization');
+                    if (visualizationTrace) {
+                        visualizationTrace.events.push(traceEvent);
+                        localStorage.setItem('travelTrackTraces', JSON.stringify(traces));
+                    }
+                }
+            } catch (error) {
+                console.error('Error recording trace event:', error);
+            }
+        }
+        
+        // Initialize charts when the page loads
+        window.addEventListener('load', () => {
+            initCharts();
+            // Record page load in traceability system
+            recordTraceEvent('visualization_page_load', 'Visualization page loaded');
+        });
+    </script>
+</body>
+</html>
